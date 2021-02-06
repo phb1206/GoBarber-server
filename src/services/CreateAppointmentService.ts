@@ -1,4 +1,5 @@
 import { startOfHour } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 
 import Appointment from '../models/Appointment';
 import AppointmentRepository from '../repositories/AppointmentRepository';
@@ -9,22 +10,22 @@ interface RequestDTO {
 }
 
 class CreateAppointmentService {
-    private appointmentRepository;
+    public async execute({ provider, date }: RequestDTO): Promise<Appointment> {
+        const appointmentRepository = getCustomRepository(
+            AppointmentRepository,
+        );
 
-    constructor(appointmentRepository: AppointmentRepository) {
-        this.appointmentRepository = appointmentRepository;
-    }
-
-    public execute({ provider, date }: RequestDTO): Appointment {
         const appointmentHour = startOfHour(date);
 
-        if (this.appointmentRepository.findByDate(appointmentHour))
+        if (await appointmentRepository.findByDate(appointmentHour))
             throw Error('Timeslot already booked');
 
-        const appointment = this.appointmentRepository.create({
+        const appointment = appointmentRepository.create({
             provider,
             date: appointmentHour,
         });
+        await appointmentRepository.save(appointment);
+
         return appointment;
     }
 }
