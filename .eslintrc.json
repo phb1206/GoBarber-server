@@ -29,7 +29,8 @@
         "prettier/prettier": "error",
         "no-console": "off",
         "class-methods-use-this": "off",
-        "camelcase": "off"
+        "camelcase": "off",
+        "@typescript-eslint/no-non-null-assertion":"off"
     },
     "settings": {
         "import/resolver": {
