@@ -20,7 +20,7 @@ export default function ensureAuthenticated(
     try {
         const decoded = verify(token, authConfig.jwt.secret);
         const { sub } = decoded as TokenPayload;
-        req.user.id = sub;
+        req.user = { id: sub };
         next();
     } catch (err) {
         throw new Error('Invalid JWT token');
