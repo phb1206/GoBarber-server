@@ -1,6 +1,8 @@
 import { compare } from 'bcryptjs';
 import { getRepository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
+
+import authConfig from '../config/auth';
 import User from '../models/User';
 
 interface RequestDTO {
@@ -24,9 +26,10 @@ class AuthenticeteUserService {
         if (!(await compare(password, user.password!)))
             throw new Error('Wrong password');
 
-        const token = sign({}, '40e9d464d99ce82594ac1bb27f8d5b0c', {
+        const { secret, expiresIn } = authConfig.jwt;
+        const token = sign({}, secret, {
             subject: user.id,
-            expiresIn: '1d',
+            expiresIn,
         });
 
         return { user, token };
