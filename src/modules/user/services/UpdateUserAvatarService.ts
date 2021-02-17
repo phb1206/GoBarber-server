@@ -1,23 +1,29 @@
-import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
+import { inject, injectable } from 'tsyringe';
 
-import uploadConfig from '../config/upload';
-import User from '../models/User';
-import AppError from '../errors/AppError';
+import uploadConfig from '@config/upload';
+import User from '@modules/user/infra/typeorm/entities/User';
+import UserRepository from '@modules/user/repositories/IUserRepository';
+import AppError from '@shared/errors/AppError';
 
 interface RequestDTO {
     user_id: string;
     avatarFileName: string;
 }
 
+@injectable()
 class UpdateUserAvatarService {
+    constructor(
+        @inject('UserRepository')
+        private userRepository: UserRepository,
+    ) {}
+
     public async execute({
         user_id,
         avatarFileName,
     }: RequestDTO): Promise<User> {
-        const userRepository = getRepository(User);
-        const user = await userRepository.findOne(user_id);
+        const user = await this.userRepository.findById(user_id);
 
         if (!user)
             throw new AppError(
@@ -35,7 +41,7 @@ class UpdateUserAvatarService {
         }
 
         user.avatar = avatarFileName;
-        await userRepository.save(user);
+        await this.userRepository.save(user);
 
         return user;
     }

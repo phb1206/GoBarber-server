@@ -1,10 +1,11 @@
+import { inject, injectable } from 'tsyringe';
 import { compare } from 'bcryptjs';
-import { getRepository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 
-import authConfig from '../config/auth';
-import User from '../models/User';
-import AppError from '../errors/AppError';
+import authConfig from '@config/auth';
+import User from '@modules/user/infra/typeorm/entities/User';
+import UserRepository from '@modules/user/repositories/IUserRepository';
+import AppError from '@shared/errors/AppError';
 
 interface RequestDTO {
     email: string;
@@ -15,13 +16,18 @@ interface ResponseDTO {
     token: string;
 }
 
+@injectable()
 class AuthenticeteUserService {
+    constructor(
+        @inject('UserRepository')
+        private userRepository: UserRepository,
+    ) {}
+
     public async execute({
         email,
         password,
     }: RequestDTO): Promise<ResponseDTO> {
-        const userRepository = getRepository(User);
-        const user = await userRepository.findOne({ where: { email } });
+        const user = await this.userRepository.findByEmail(email);
 
         if (!user)
             throw new AppError('Invalid email/password combination', 401);
