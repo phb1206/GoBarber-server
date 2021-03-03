@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 import authConfig from '@config/auth';
 import User from '@modules/user/infra/typeorm/entities/User';
 import UserRepository from '@modules/user/repositories/IUserRepository';
+import HashProvider from '@modules/user/providers/HashProvider/models/IHashProvider';
 import AppError from '@shared/errors/AppError';
 
 interface RequestDTO {
@@ -21,6 +21,9 @@ class AuthenticeteUserService {
     constructor(
         @inject('UserRepository')
         private userRepository: UserRepository,
+
+        @inject('HashProvider')
+        private hashProvider: HashProvider,
     ) {}
 
     public async execute({
@@ -31,7 +34,7 @@ class AuthenticeteUserService {
 
         if (!user)
             throw new AppError('Invalid email/password combination', 401);
-        if (!(await compare(password, user.password!)))
+        if (!(await this.hashProvider.compareHash(password, user.password!)))
             throw new AppError('Invalid email/password combination', 401);
 
         const { secret, expiresIn } = authConfig.jwt;
