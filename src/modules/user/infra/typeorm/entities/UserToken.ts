@@ -4,26 +4,22 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    Generated,
 } from 'typeorm';
 
-import IUser from '@modules/user/models/IUser';
+import IUserToken from '@modules/user/models/IUserToken';
 
-@Entity('users')
-class User implements IUser {
+@Entity('user_tokens')
+class UserToken implements IUserToken {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
-    name: string;
+    @Generated('uuid')
+    token: string;
 
     @Column()
-    email: string;
-
-    @Column()
-    password?: string;
-
-    @Column()
-    avatar: string;
+    userId: string;
 
     @CreateDateColumn()
     created_at: Date;
@@ -32,4 +28,4 @@ class User implements IUser {
     updated_at: Date;
 }
 
-export default User;
+export default UserToken;
