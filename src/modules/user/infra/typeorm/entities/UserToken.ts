@@ -19,7 +19,7 @@ class UserToken implements IUserToken {
     token: string;
 
     @Column()
-    userId: string;
+    user_id: string;
 
     @CreateDateColumn()
     created_at: Date;
