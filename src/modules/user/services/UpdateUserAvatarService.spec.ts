@@ -3,16 +3,21 @@ import FakeStorageProvider from '@shared/container/providers/StorageProviders/fa
 import AppError from '@shared/errors/AppError';
 import UpdateUserAvatarService from './UpdateUserAvatarService';
 
-describe('UpdateUserAvatar', () => {
-    it('should be able to add an avatar to user', async () => {
-        const fakeUserRepository = new FakeUserRepository();
-        const fakeStorageProvider = new FakeStorageProvider();
+let fakeUserRepository: FakeUserRepository;
+let fakeStorageProvider: FakeStorageProvider;
+let updateUserAvatar: UpdateUserAvatarService;
 
-        const updateUserAvatar = new UpdateUserAvatarService(
+describe('UpdateUserAvatar', () => {
+    beforeEach(() => {
+        fakeUserRepository = new FakeUserRepository();
+        fakeStorageProvider = new FakeStorageProvider();
+        updateUserAvatar = new UpdateUserAvatarService(
             fakeUserRepository,
             fakeStorageProvider,
         );
+    });
 
+    it('should be able to add an avatar to user', async () => {
         const user = await fakeUserRepository.create({
             name: 'Pedro',
             email: 'pedro@brandao.com',
@@ -28,15 +33,7 @@ describe('UpdateUserAvatar', () => {
     });
 
     it('should delete old avatar when updating', async () => {
-        const fakeUserRepository = new FakeUserRepository();
-        const fakeStorageProvider = new FakeStorageProvider();
-
         const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
-
-        const updateUserAvatar = new UpdateUserAvatarService(
-            fakeUserRepository,
-            fakeStorageProvider,
-        );
 
         const user = await fakeUserRepository.create({
             name: 'Pedro',
@@ -59,14 +56,6 @@ describe('UpdateUserAvatar', () => {
     });
 
     it('should not be able to add an avatar to non existing user', async () => {
-        const fakeUserRepository = new FakeUserRepository();
-        const fakeStorageProvider = new FakeStorageProvider();
-
-        const updateUserAvatar = new UpdateUserAvatarService(
-            fakeUserRepository,
-            fakeStorageProvider,
-        );
-
         expect(
             updateUserAvatar.execute({
                 user_id: '404',
