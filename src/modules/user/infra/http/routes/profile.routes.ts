@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
+import { celebrate, Segments, Joi } from 'celebrate';
 
 import ensureAuthenticated from '@modules/user/infra/http/middlewares/ensureAuthenticated';
 import ShowProfileService from '@modules/user/services/ShowProfileService';
@@ -16,20 +17,40 @@ profileRouter.get('/', async (req, res) => {
     return res.status(200).json(user);
 });
 
-profileRouter.put('/', async (req, res) => {
-    const user_id = req.user.id;
-    const { name, email, old_password, password } = req.body;
+profileRouter.put(
+    '/',
+    celebrate({
+        [Segments.BODY]: {
+            name: Joi.string().required(),
+            email: Joi.string().email().required(),
+            password: Joi.string(),
+            old_password: Joi.string().when('password', {
+                is: Joi.exist(),
+                then: Joi.required(),
+            }),
+            password_confirmation: Joi.string()
+                .valid(Joi.ref('password'))
+                .when('password', {
+                    is: Joi.exist(),
+                    then: Joi.required(),
+                }),
+        },
+    }),
+    async (req, res) => {
+        const user_id = req.user.id;
+        const { name, email, old_password, password } = req.body;
 
-    const updateProfileService = container.resolve(UpdateProfileService);
-    const user = await updateProfileService.execute({
-        user_id,
-        name,
-        email,
-        old_password,
-        password,
-    });
+        const updateProfileService = container.resolve(UpdateProfileService);
+        const user = await updateProfileService.execute({
+            user_id,
+            name,
+            email,
+            old_password,
+            password,
+        });
 
-    return res.status(200).json(user);
-});
+        return res.status(200).json(user);
+    },
+);
 
 export default profileRouter;
