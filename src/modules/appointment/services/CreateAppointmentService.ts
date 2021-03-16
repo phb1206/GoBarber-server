@@ -1,4 +1,4 @@
-import { startOfHour } from 'date-fns';
+import { isBefore, startOfHour } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 
 import Appointment from '@modules/appointment/infra/typeorm/entities/Appointment';
@@ -7,6 +7,7 @@ import AppError from '@shared/errors/AppError';
 
 interface IRequestDTO {
     provider_id: string;
+    customer_id: string;
     date: Date;
 }
 
@@ -19,16 +20,31 @@ class CreateAppointmentService {
 
     public async execute({
         provider_id,
+        customer_id,
         date,
     }: IRequestDTO): Promise<Appointment> {
-        const appointmentHour = startOfHour(date);
+        if (provider_id === customer_id)
+            throw new AppError(
+                "Can't create appointment with same customer/provider",
+            );
 
-        if (await this.appointmentsRepository.findByDate(appointmentHour))
+        const appointmentDate = startOfHour(date);
+
+        if (isBefore(appointmentDate, Date.now()))
+            throw new AppError("Can't create appointment in the past");
+
+        if (appointmentDate.getHours() < 9)
+            throw new AppError("Can't create appointment before 9:00");
+        if (appointmentDate.getHours() > 18)
+            throw new AppError("Can't create appointment after 18:00");
+
+        if (await this.appointmentsRepository.findByDate(appointmentDate))
             throw new AppError('Timeslot already booked');
 
         const appointment = await this.appointmentsRepository.create({
             provider_id,
-            date: appointmentHour,
+            customer_id,
+            date: appointmentDate,
         });
 
         return appointment;

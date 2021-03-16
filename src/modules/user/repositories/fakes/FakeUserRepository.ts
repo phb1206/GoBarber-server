@@ -8,14 +8,22 @@ import User from '@modules/user/infra/typeorm/entities/User';
 class FakeUserRepository implements IUserRepository {
     private users: User[] = [];
 
+    public async findAll(exclude_ids?: string[]): Promise<User[]> {
+        let { users } = this;
+
+        if (exclude_ids) {
+            users = users.filter(user => !exclude_ids.includes(user.id));
+        }
+
+        return users;
+    }
+
     public async findById(id: string): Promise<User | undefined> {
-        const findUser = this.users.find(user => user.id === id);
-        return findUser;
+        return this.users.find(user => user.id === id);
     }
 
     public async findByEmail(email: string): Promise<User | undefined> {
-        const findUser = this.users.find(user => user.email === email);
-        return findUser;
+        return this.users.find(user => user.email === email);
     }
 
     public async create({

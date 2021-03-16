@@ -5,6 +5,8 @@ import IAppointmentRepository from '@modules/appointment/repositories/IAppointme
 import CreateAppointmentDTO from '@modules/appointment/dtos/CreateAppointmentDTO';
 
 import Appointment from '@modules/appointment/infra/typeorm/entities/Appointment';
+import FindAllInMonthDTO from '@modules/appointment/dtos/FindAllInMonthDTO';
+import FindAllInDayDTO from '@modules/appointment/dtos/FindAllInDayDTO';
 
 class AppointmentRepository implements IAppointmentRepository {
     appointments: Appointment[] = [];
@@ -18,6 +20,7 @@ class AppointmentRepository implements IAppointmentRepository {
 
     public async create({
         provider_id,
+        customer_id,
         date,
     }: CreateAppointmentDTO): Promise<Appointment> {
         const appointment = new Appointment();
@@ -28,11 +31,44 @@ class AppointmentRepository implements IAppointmentRepository {
         Object.assign(appointment, {
             id: uuid4(),
             provider_id,
+            customer_id,
             date,
         });
 
         this.appointments.push(appointment);
         return appointment;
+    }
+
+    findAllInMonth({
+        provider_id,
+        year,
+        month,
+    }: FindAllInMonthDTO): Promise<Appointment[]> {
+        const appointments = this.appointments.filter(
+            appointment =>
+                appointment.provider_id === provider_id &&
+                appointment.date.getFullYear() === year &&
+                appointment.date.getMonth() === month - 1,
+        );
+
+        return Promise.resolve(appointments);
+    }
+
+    findAllInDay({
+        provider_id,
+        year,
+        month,
+        day,
+    }: FindAllInDayDTO): Promise<Appointment[]> {
+        const appointments = this.appointments.filter(
+            appointment =>
+                appointment.provider_id === provider_id &&
+                appointment.date.getFullYear() === year &&
+                appointment.date.getMonth() === month - 1 &&
+                appointment.date.getDate() === day,
+        );
+
+        return Promise.resolve(appointments);
     }
 }
 

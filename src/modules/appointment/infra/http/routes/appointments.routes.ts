@@ -13,12 +13,14 @@ appointmentsRouter.use(ensureAuthenticated);
 // });
 
 appointmentsRouter.post('/', async (req, res) => {
+    const user_id = req.user.id;
     const { provider_id, date } = req.body;
     const parsedDate = parseISO(date);
 
     const createAppointment = container.resolve(CreateAppointmentService);
     const appointment = await createAppointment.execute({
         provider_id,
+        customer_id: user_id,
         date: parsedDate,
     });
 

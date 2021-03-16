@@ -8,13 +8,13 @@ import IUserToken from '@modules/user/models/IUserToken';
 class FakeUserTokenRepository implements IUserTokenRepository {
     private userTokens: UserToken[] = [];
 
-    public async generate(userId: string): Promise<UserToken> {
+    public async generate(user_id: string): Promise<UserToken> {
         const userToken = new UserToken();
 
         Object.assign(userToken, {
             id: uuid(),
             token: uuid(),
-            userId,
+            user_id,
             created_at: new Date(),
             updated_at: new Date(),
         });

@@ -29,10 +29,10 @@ describe('ResetPassword', () => {
             password: '123456',
         });
 
-        const userToken = await fakeUserTokenRepository.generate(user.id);
+        const { token } = await fakeUserTokenRepository.generate(user.id);
 
         await resetPassword.execute({
-            token: userToken.token,
+            token,
             password: '654321',
         });
 

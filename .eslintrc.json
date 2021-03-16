@@ -29,6 +29,7 @@
         ],
         "prettier/prettier": "error",
         "no-console": "off",
+        "no-param-reassign":"off",
         "class-methods-use-this": "off",
         "camelcase": "off",
         "no-useless-constructor":"off",
