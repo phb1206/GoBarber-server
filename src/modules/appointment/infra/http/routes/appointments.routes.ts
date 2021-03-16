@@ -4,13 +4,10 @@ import { container } from 'tsyringe';
 
 import CreateAppointmentService from '@modules/appointment/services/CreateAppointmentService';
 import ensureAuthenticated from '@modules/user/infra/http/middlewares/ensureAuthenticated';
+import ListProviderAppointmentsService from '@modules/appointment/services/ListProviderAppointmentsService';
 
 const appointmentsRouter = Router();
 appointmentsRouter.use(ensureAuthenticated);
-
-// appointmentsRouter.get('/', async (req, res) => {
-//     return res.json(await appointmentRepository.find());
-// });
 
 appointmentsRouter.post('/', async (req, res) => {
     const user_id = req.user.id;
@@ -25,6 +22,24 @@ appointmentsRouter.post('/', async (req, res) => {
     });
 
     return res.json(appointment);
+});
+
+appointmentsRouter.get('/me', async (req, res) => {
+    const provider_id = req.user.id;
+    const { day, month, year } = req.body;
+
+    const createAppointment = container.resolve(
+        ListProviderAppointmentsService,
+    );
+
+    const appointments = await createAppointment.execute({
+        provider_id,
+        day,
+        month,
+        year,
+    });
+
+    return res.json(appointments);
 });
 
 export default appointmentsRouter;
