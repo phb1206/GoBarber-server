@@ -3,7 +3,6 @@ import { inject, injectable } from 'tsyringe';
 
 import MailTemplateProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
 import SendMailDTO from '../dtos/SendMailDTO';
-
 import IMailProvider from '../models/IMailProvider';
 
 @injectable()

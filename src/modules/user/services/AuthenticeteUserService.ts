@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { inject, injectable } from 'tsyringe';
 import { sign } from 'jsonwebtoken';
 
@@ -38,7 +39,7 @@ class AuthenticeteUserService {
             throw new AppError('Invalid email/password combination', 401);
 
         const { secret, expiresIn } = authConfig.jwt;
-        const token = sign({}, secret, {
+        const token = sign({}, secret!, {
             subject: user.id,
             expiresIn,
         });
