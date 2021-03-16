@@ -13,7 +13,7 @@ class ListProviderService {
     public async execute(user_id: string): Promise<User[]> {
         const users = await this.userRepository.findAll([user_id]);
 
-        users.forEach(user => delete user.password);
+        // users.forEach(user => delete user.password);
 
         return users;
     }

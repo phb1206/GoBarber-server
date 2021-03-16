@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { container } from 'tsyringe';
 import { celebrate, Segments, Joi } from 'celebrate';
+import { classToClass } from 'class-transformer';
 
 import CreateUserService from '@modules/user/services/CreateUserService';
 import UpdateUserAvatarService from '@modules/user/services/UpdateUserAvatarService';
@@ -28,9 +29,9 @@ usersRouter.post(
 
         const createUser = container.resolve(CreateUserService);
         const user = await createUser.execute(data);
-        delete user.password;
+        // delete user.password;
 
-        return res.json(user);
+        return res.json(classToClass(user));
     },
 );
 
@@ -47,8 +48,8 @@ usersRouter.patch(
             avatarFileName: req.file.filename,
         });
 
-        delete user.password;
-        return res.json(user);
+        // delete user.password;
+        return res.json(classToClass(user));
     },
 );
 

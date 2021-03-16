@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { celebrate, Segments, Joi } from 'celebrate';
+import { classToClass } from 'class-transformer';
 
 import ListProvidersService from '@modules/appointment/services/ListProvidersService';
 import ensureAuthenticated from '@modules/user/infra/http/middlewares/ensureAuthenticated';
@@ -17,7 +18,7 @@ providersRouter.get('/', async (req, res) => {
 
     const providers = await listProvidersService.execute(userId);
 
-    return res.status(200).json(providers);
+    return res.status(200).json(classToClass(providers));
 });
 
 providersRouter.get(

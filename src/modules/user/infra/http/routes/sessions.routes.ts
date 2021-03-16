@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { celebrate, Segments, Joi } from 'celebrate';
+import { classToClass } from 'class-transformer';
 
 import AuthenticeteUserService from '@modules/user/services/AuthenticeteUserService';
 
@@ -19,9 +20,9 @@ sessionsRouter.post(
 
         const authUser = container.resolve(AuthenticeteUserService);
         const { user, token } = await authUser.execute(data);
-        delete user.password;
+        // delete user.password;
 
-        return res.json({ user, token });
+        return res.json({ user: classToClass(user), token });
     },
 );
 

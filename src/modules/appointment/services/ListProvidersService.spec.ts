@@ -31,8 +31,8 @@ describe('ListProviders', () => {
 
         const users = await listProvidersService.execute(loggedUser.id);
 
-        delete user1.password;
-        delete user2.password;
+        // delete user1.password;
+        // delete user2.password;
 
         expect(users).toEqual([user1, user2]);
     });

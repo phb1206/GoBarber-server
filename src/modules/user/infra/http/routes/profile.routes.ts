@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import { celebrate, Segments, Joi } from 'celebrate';
+import { classToClass } from 'class-transformer';
 
 import ensureAuthenticated from '@modules/user/infra/http/middlewares/ensureAuthenticated';
 import ShowProfileService from '@modules/user/services/ShowProfileService';
@@ -14,7 +15,7 @@ profileRouter.get('/', async (req, res) => {
     const user_id = req.user.id;
     const showProfileService = container.resolve(ShowProfileService);
     const user = await showProfileService.execute(user_id);
-    return res.status(200).json(user);
+    return res.status(200).json(classToClass(user));
 });
 
 profileRouter.put(
@@ -49,7 +50,7 @@ profileRouter.put(
             password,
         });
 
-        return res.status(200).json(user);
+        return res.status(200).json(classToClass(user));
     },
 );
 
