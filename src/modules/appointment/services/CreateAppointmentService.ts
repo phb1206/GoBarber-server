@@ -4,6 +4,7 @@ import { inject, injectable } from 'tsyringe';
 import Appointment from '@modules/appointment/infra/typeorm/entities/Appointment';
 import IAppointmentRepository from '@modules/appointment/repositories/IAppointmentRepository';
 import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import AppError from '@shared/errors/AppError';
 
 interface IRequestDTO {
@@ -20,6 +21,9 @@ class CreateAppointmentService {
 
         @inject('NotificationRepository')
         private notificationRepository: INotificationRepository,
+
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider,
     ) {}
 
     public async execute({
@@ -50,6 +54,11 @@ class CreateAppointmentService {
             customer_id,
             date: appointmentDate,
         });
+
+        await this.cacheProvider.invalidate(
+            `provider_appointments:${provider_id}:${appointmentDate.getFullYear()}:
+            ${appointmentDate.getMonth()}:${appointmentDate.getDate()}`,
+        );
 
         const formattedDate = format(
             appointmentDate,

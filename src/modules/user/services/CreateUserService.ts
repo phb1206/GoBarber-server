@@ -1,8 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 
-import User from '@modules/user/infra/typeorm/entities/User';
 import UserRepository from '@modules/user/repositories/IUserRepository';
 import HashProvider from '@modules/user/providers/HashProvider/models/IHashProvider';
+import CacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+
+import User from '@modules/user/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
 
 interface RequestDTO {
@@ -19,6 +21,9 @@ class CreateUserService {
 
         @inject('HashProvider')
         private hashProvider: HashProvider,
+
+        @inject('CacheProvider')
+        private cacheProvider: CacheProvider,
     ) {}
 
     public async execute({ name, email, password }: RequestDTO): Promise<User> {
@@ -32,6 +37,8 @@ class CreateUserService {
             email,
             password: hashedPassword,
         });
+
+        await this.cacheProvider.invalidatePrefix('provider_list');
 
         return user;
     }
