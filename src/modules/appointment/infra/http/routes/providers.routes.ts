@@ -30,15 +30,15 @@ providersRouter.get(
     }),
     async (req, res) => {
         const { provider_id } = req.params;
-        const { month, year } = req.body;
+        const { month, year } = req.query;
         const listMonthAvailabilityService = container.resolve(
             ListMonthAvailabilityService,
         );
 
         const availability = await listMonthAvailabilityService.execute({
             provider_id,
-            month,
-            year,
+            month: Number(month),
+            year: Number(year),
         });
 
         return res.status(200).json(availability);
@@ -54,16 +54,16 @@ providersRouter.get(
     }),
     async (req, res) => {
         const { provider_id } = req.params;
-        const { day, month, year } = req.body;
+        const { day, month, year } = req.query;
         const listDayAvailabilityService = container.resolve(
             ListDayAvailabilityService,
         );
 
         const availability = await listDayAvailabilityService.execute({
             provider_id,
-            day,
-            month,
-            year,
+            day: Number(day),
+            month: Number(month),
+            year: Number(year),
         });
 
         return res.status(200).json(availability);

@@ -34,7 +34,7 @@ appointmentsRouter.post(
 
 appointmentsRouter.get('/me', async (req, res) => {
     const provider_id = req.user.id;
-    const { day, month, year } = req.body;
+    const { day, month, year } = req.query;
 
     const createAppointment = container.resolve(
         ListProviderAppointmentsService,
@@ -42,9 +42,9 @@ appointmentsRouter.get('/me', async (req, res) => {
 
     const appointments = await createAppointment.execute({
         provider_id,
-        day,
-        month,
-        year,
+        day: Number(day),
+        month: Number(month),
+        year: Number(year),
     });
 
     return res.json(appointments);
