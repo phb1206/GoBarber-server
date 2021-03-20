@@ -5,6 +5,7 @@ import { celebrate, Segments, Joi } from 'celebrate';
 import CreateAppointmentService from '@modules/appointment/services/CreateAppointmentService';
 import ensureAuthenticated from '@modules/user/infra/http/middlewares/ensureAuthenticated';
 import ListProviderAppointmentsService from '@modules/appointment/services/ListProviderAppointmentsService';
+import { classToClass } from 'class-transformer';
 
 const appointmentsRouter = Router();
 appointmentsRouter.use(ensureAuthenticated);
@@ -47,7 +48,7 @@ appointmentsRouter.get('/me', async (req, res) => {
         year: Number(year),
     });
 
-    return res.json(appointments);
+    return res.json(classToClass(appointments));
 });
 
 export default appointmentsRouter;
