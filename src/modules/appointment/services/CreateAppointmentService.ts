@@ -46,7 +46,12 @@ class CreateAppointmentService {
         if (appointmentDate.getHours() > 18)
             throw new AppError("Can't create appointment after 18:00");
 
-        if (await this.appointmentsRepository.findByDate(appointmentDate))
+        if (
+            await this.appointmentsRepository.findByDate(
+                appointmentDate,
+                provider_id,
+            )
+        )
             throw new AppError('Timeslot already booked');
 
         const appointment = await this.appointmentsRepository.create({
