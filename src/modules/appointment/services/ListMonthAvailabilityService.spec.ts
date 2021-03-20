@@ -16,63 +16,63 @@ describe('ListMonthAvailability', () => {
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 9),
+            date: new Date(2022, 2, 14, 9),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 10),
+            date: new Date(2022, 2, 14, 10),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 11),
+            date: new Date(2022, 2, 14, 11),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 12),
+            date: new Date(2022, 2, 14, 12),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 13),
+            date: new Date(2022, 2, 14, 13),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 14),
+            date: new Date(2022, 2, 14, 14),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 15),
+            date: new Date(2022, 2, 14, 15),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 16),
+            date: new Date(2022, 2, 14, 16),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 17),
+            date: new Date(2022, 2, 14, 17),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 14, 18),
+            date: new Date(2022, 2, 14, 18),
         });
         await fakeAppointmentsRepository.create({
             provider_id: 'provider_id',
             customer_id: 'c_id',
-            date: new Date(2020, 2, 15, 10),
+            date: new Date(2022, 2, 15, 10),
         });
 
         const availability = await listMonthAvailabilityService.execute({
             provider_id: 'provider_id',
             month: 3,
-            year: 2020,
+            year: 2022,
         });
 
         expect(availability).toEqual(

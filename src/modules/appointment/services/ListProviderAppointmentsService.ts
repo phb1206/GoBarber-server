@@ -43,6 +43,11 @@ class ListProviderAppointmentsService {
             });
 
             await this.cacheProvider.save(cacheKey, classToClass(appointments));
+        } else {
+            appointments = appointments.map(appointment => ({
+                ...appointment,
+                date: new Date(appointment.date),
+            }));
         }
 
         return appointments;
