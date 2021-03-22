@@ -61,8 +61,10 @@ class CreateAppointmentService {
         });
 
         await this.cacheProvider.invalidate(
-            `provider_appointments:${provider_id}:${appointmentDate.getFullYear()}:
-            ${appointmentDate.getMonth()}:${appointmentDate.getDate()}`,
+            `provider-appointments:${provider_id}:${format(
+                appointmentDate,
+                'yyyy-M-d',
+            )}`,
         );
 
         const formattedDate = format(
