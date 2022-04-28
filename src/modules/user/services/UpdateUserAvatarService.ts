@@ -7,6 +7,7 @@ import User from '@modules/user/infra/typeorm/entities/User';
 import UserRepository from '@modules/user/repositories/IUserRepository';
 import StorageProvider from '@shared/container/providers/StorageProviders/models/IStorageProvider';
 import AppError from '@shared/errors/AppError';
+import CacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface RequestDTO {
     user_id: string;
@@ -21,6 +22,9 @@ class UpdateUserAvatarService {
 
         @inject('StorageProvider')
         private storageProvider: StorageProvider,
+
+        @inject('CacheProvider')
+        private cacheProvider: CacheProvider,
     ) {}
 
     public async execute({
@@ -43,6 +47,8 @@ class UpdateUserAvatarService {
 
         user.avatar = filename;
         await this.userRepository.save(user);
+
+        await this.cacheProvider.invalidatePrefix('providers_list');
 
         return user;
     }

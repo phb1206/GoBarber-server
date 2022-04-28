@@ -42,7 +42,7 @@ class ListMonthAvailabilityService {
             const thisDate = new Date(year, month - 1, day, hour);
 
             const hourBooked = appointments.some(
-                appointment => appointment.date.getHours() === hour,
+                appointment => appointment.date.getUTCHours() === hour,
             );
 
             return {

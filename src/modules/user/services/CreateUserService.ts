@@ -38,7 +38,7 @@ class CreateUserService {
             password: hashedPassword,
         });
 
-        await this.cacheProvider.invalidatePrefix('provider_list');
+        await this.cacheProvider.invalidatePrefix('providers_list');
 
         return user;
     }

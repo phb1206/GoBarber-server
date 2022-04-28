@@ -4,6 +4,7 @@ import User from '@modules/user/infra/typeorm/entities/User';
 import UserRepository from '@modules/user/repositories/IUserRepository';
 import HashProvider from '@modules/user/providers/HashProvider/models/IHashProvider';
 import AppError from '@shared/errors/AppError';
+import CacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface RequestDTO {
     user_id: string;
@@ -21,6 +22,9 @@ class UpdateProfileService {
 
         @inject('HashProvider')
         private hashProvider: HashProvider,
+
+        @inject('CacheProvider')
+        private cacheProvider: CacheProvider,
     ) {}
 
     public async execute({
@@ -59,7 +63,8 @@ class UpdateProfileService {
 
         const updatedUser = await this.userRepository.save(user);
 
-        updatedUser.password = undefined;
+        await this.cacheProvider.invalidatePrefix('providers_list');
+
         return updatedUser;
     }
 }

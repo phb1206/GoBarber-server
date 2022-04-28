@@ -41,9 +41,9 @@ class CreateAppointmentService {
         if (isBefore(appointmentDate, Date.now()))
             throw new AppError("Can't create appointment in the past");
 
-        if (appointmentDate.getHours() < 9)
+        if (appointmentDate.getUTCHours() < 9)
             throw new AppError("Can't create appointment before 9:00");
-        if (appointmentDate.getHours() > 18)
+        if (appointmentDate.getUTCHours() > 18)
             throw new AppError("Can't create appointment after 18:00");
 
         if (
